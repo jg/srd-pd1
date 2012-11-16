@@ -39,7 +39,11 @@ end
 
 
 function y = indeks_stanu(stany, x)
-y = find(stany == x);
+[val, y] = min(abs(stany - x));
+if y > length(stany)
+  y = length(stany)
+end
+
 end
 
 function y = g(x, u, w)
