@@ -4,8 +4,8 @@ function pd1()
 global alfa beta gamma N; % parametry modelu
 N = 10; % liczba etapów
 alfa = 0.1;
-beta = 0.1;
-gamma = 0.5;
+beta = 0.000001;
+gamma = 0.05;
 
 etapy = N:-1:1;
 stany = 5000:5000:50000; % saldo na koncie na pocz¹tku etapu
@@ -25,7 +25,7 @@ for k = etapy
         J = J + w(2) * (g(x, u, w(1)) + Jd(k+1, xi));
       end
       
-      if J >= Jd(k)         
+      if J >= Jd(k, xi)         
         Jd(k, xi) = J; 
         Ud(k, xi) = u;        
       end
