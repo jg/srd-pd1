@@ -2,20 +2,20 @@ function pd1()
 
 
 global alfa beta gamma N x0 NS; % parametry modelu
-N = 10; % liczba etapÛw
-NS = 80; % liczba symulacji
-x0 = 5000; % poczatkowy stan konta
-alfa = 0.1;
-beta = 0.000001;
-gamma = 0.05;
+N = 10; % liczba etap√≥w
+NS = 200; % liczba symulacji
+x0 = 15000; % poczatkowy stan konta
+alfa= 0.1;
+beta= 0.000007;
+gamma=0.001;
 
 etapy = N:-1:1;
-stany = 5000:5000:50000; % saldo na koncie na poczπtku etapu
-sterowania = 0:0.01:1; % procentowy udzia≥ operacji walutowych w etapie k
-zaklocenia  = [0.9 0.1;1 0.1; 1.2 0.3; 1.4 0.02; 1.6 0.08; 1.8 0.08; 2 0.08; 2.2 0.08; 2.4 0.08; 2.6 0.08]'; % pary: (zak≥Ûcenie, prawdopodobienstwo zaklocenia)
+stany = 500:500:300000; % saldo na koncie na pocz≈°tku etapu
+sterowania = 0:0.01:1; % procentowy udzia≈Ç operacji walutowych w etapie k
+zaklocenia  = [0.5 0.3;1 0.3; 1.4 0.3; 2 0.1]'; % pary: (zak≈Ç√≥cenie, prawdopodobienstwo zaklocenia)
 
-Jd = zeros(N+1, length(stany)); % optymalne wskazniki jakosci dla etapow i stanÛw
-Ud = zeros(N, length(stany)); % optymalne sterowania dla etapow i stanÛw
+Jd = zeros(N+1, length(stany)); % optymalne wskazniki jakosci dla etapow i stan√≥w
+Ud = zeros(N, length(stany)); % optymalne sterowania dla etapow i stan√≥w
 
 for k = etapy  
   for x = stany    
@@ -36,8 +36,8 @@ for k = etapy
   end
 end
 
-Jd
-Ud
+Jd;
+Ud;
 
 % symulacja
 
@@ -49,7 +49,7 @@ for s = 1:NS
   for k = 1:N
     x = X(end);        
     u = Ud(k, indeks_stanu(stany, x));
-    w = losowe_zaklocenie(zaklocenia)
+    w = losowe_zaklocenie(zaklocenia);
     
     X = [X; f(x, u, w)];
     U = [U; u];
@@ -63,22 +63,23 @@ disp('Sredni wskaznik jakosci wszystkich symulacji');
 Jsr = sum(Js) / numel(Js)
 disp('Wartosc oczekiwana optymalizacji');
 Jd(1, indeks_stanu(stany, x0))
-disp('Blad miedzy wartoscia oczekiwana z optymalizacji i symulacji (w %)');
-blad = abs((1-Jsr/Jd(1,indeks_stanu(stany, x0))))
+disp('Blad miedzy wartoscia oczekiwana z optymalizacji i symulacji');
+blad = (Jsr/Jd(1,indeks_stanu(stany, x0))-1)
 
 
 % Optymalna polityka
-%figure(1);
-%surf(Jd(1:N,:))
+figure(1);
+surf(Jd(1:N,:))
 % Wykres regul decyzyjnych
-%figure(2);
-%plot(1:length(stany), Ud(:,1:length(stany)))
+figure(2);
+plot(1:length(stany), Ud(:,1:length(stany)))
 Jsrch = [];          % Wskaznik jakosci dla kazdej serii symulacji
 for i = 1:NS
     Jsrch = [Jsrch; sum(Js(1:i)/i)];
 end
+figure(3);
 plot(1:numel(Jsrch), Jsrch);
-% plot(1:numel(Js), Js);
+%plot(1:numel(Js), Js);
 
 end
 
@@ -113,3 +114,4 @@ function y = f(x, u, w)
 global gamma;
 y = u * w * x + (1 - u) * (1 + gamma) * x;
 end
+
